@@ -15,19 +15,31 @@ const ColorCard = ({ colorHex }: ColorCardProps) => {
     const ref = useRef<HTMLSelectElement>(null);
     return (
         <div
-            className="flex
-        h-[22rem] w-[18rem]
+            className=" flex
+        h-3/4 w-[15%]
         flex-wrap rounded-[0.5rem] border
         border-white bg-white
         p-3
         text-black
+        shadow-card
         "
         >
             <div
-                className="h-[15rem] w-full rounded-[5px]"
+                className="h-2/3 w-full rounded-[5px]"
                 style={{ background: colorHex }}
             ></div>
-            <div className=" flex h-[2rem] w-full items-center justify-center ">
+            <div className="flex h-1/3 w-full flex-wrap items-center justify-end">
+                <select
+                    className=" w-full rounded-[5px] border  border-black px-2 py-1 text-left text-black"
+                    ref={ref}
+                >
+                    <option value="hex" selected>
+                        {colorHex}
+                    </option>
+                    <option value="rgb">{rgbString}</option>
+                    <option value="hsb">{hsvString}</option>
+                    <option value="hsl">{hslString}</option>
+                </select>
                 <button
                     className="rounded-[5px] border border-black
                      px-4 py-1
@@ -47,17 +59,6 @@ const ColorCard = ({ colorHex }: ColorCardProps) => {
                 >
                     <IconCopy />
                 </button>
-                <select
-                    className="ml-2  w-full rounded-[5px] border  border-black px-2 py-1 text-left text-black"
-                    ref={ref}
-                >
-                    <option value="hex" selected>
-                        {colorHex}
-                    </option>
-                    <option value="rgb">{rgbString}</option>
-                    <option value="hsb">{hsvString}</option>
-                    <option value="hsl">{hslString}</option>
-                </select>
             </div>
         </div>
     );
