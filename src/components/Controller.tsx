@@ -1,7 +1,6 @@
-import { motion, useMotionValue, useTransform } from 'framer-motion';
-import type { MotionValue } from 'framer-motion';
-import { useState, useRef, useEffect, useLayoutEffect } from 'react';
-import { HexToHsv, HexToRgb, HsvToHex } from 'colorz/utils/colorconverters';
+import { motion, useMotionValue } from 'framer-motion';
+import { useState, useRef, useEffect } from 'react';
+import { HexToRgb, HsvToHex } from 'colorz/utils/colorconverters';
 import { toHex, toFixed } from 'colorz/utils/formatConverters';
 
 type ColorSliderProps = {
@@ -35,7 +34,7 @@ const ColorSlider = ({ setColor }: ColorSliderProps) => {
                 style={{ x }}
                 dragConstraints={{ left: 0, right: xSize - 30 }}
                 drag="x"
-                onDrag={(event, info) => {
+                onDrag={() => {
                     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
                     const pos = x.get();
                     const value = Math.floor((pos / (xSize - 30)) * 360);
@@ -123,7 +122,7 @@ const OpacitySlider = ({ setOpacity, color }: OpacitySliderProps) => {
                 style={{ x }}
                 dragConstraints={{ left: 0, right: xSize - 30 }}
                 drag="x"
-                onDrag={(event, info) => {
+                onDrag={() => {
                     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
                     const pos = x.get();
                     const value = Math.floor((pos / (xSize - 30)) * 255);
