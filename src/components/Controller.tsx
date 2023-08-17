@@ -1,5 +1,5 @@
 import { motion, useMotionValue } from 'framer-motion';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, Dispatch, SetStateAction } from 'react';
 import { HexToRgb, HsvToHex } from 'colorz/utils/colorconverters';
 import { toHex, toFixed } from 'colorz/utils/formatConverters';
 
@@ -140,45 +140,117 @@ const OpacitySlider = ({ setOpacity, color }: OpacitySliderProps) => {
         </motion.div>
     );
 };
-const Controller = () => {
+type ControllerProps = {
+    setBoxSize: Dispatch<SetStateAction<number>>;
+    setRadius: Dispatch<SetStateAction<number>>;
+    setCenterRadius: Dispatch<SetStateAction<number>>;
+    boxSize: number;
+    radius: number;
+    centerRadius: number;
+};
+
+const Controller = ({
+    setBoxSize,
+    setRadius,
+    setCenterRadius,
+    boxSize,
+    radius,
+    centerRadius,
+}: ControllerProps) => {
+    const [extraController, setExtraController] = useState({
+        h: 20,
+        innerH: 100,
+        displayBottom: 'none',
+    });
     const [color, setColor] = useState<string>(HsvToHex(0, 100, 100));
     const [opacity, setOpacity] = useState<number>(255);
     const [selectedBG, setSelectedBG] = useState<string>('white');
 
     return (
-        <div className="absolute bottom-0 flex h-[20vh] w-full items-center justify-center gap-1 border-y-4 border-[#52595F] bg-black py-1">
+        <div
+            className="absolute bottom-0 flex w-full items-center justify-center gap-1 border-y-4 border-[#52595F] bg-black py-1 "
+            style={{
+                height: `${extraController.h}vh`,
+            }}
+        >
+            <div
+                className="absolute bottom-full right-[2%] mb-1 h-8 w-8 cursor-pointer rounded-t-md bg-[#52595F]"
+                onClick={() => {
+                    setExtraController((prev) => {
+                        return prev.h === 20
+                            ? { h: 40, innerH: 50, displayBottom: 'flex' }
+                            : { h: 20, innerH: 100, displayBottom: 'none' };
+                    });
+                }}
+            />
             <div className="flex h-full w-[15%] items-center justify-center">
                 <ColorInformation {...{ color, opacity }} />
             </div>
-            <div className="flex h-full w-[85%] gap-4 bg-[#2F3336]">
-                <div className="flex w-[10%] flex-col items-center justify-around">
-                    <div
-                        className="h-8 w-8 rounded-full bg-black hover:cursor-pointer"
-                        onClick={() => {
-                            setSelectedBG('black');
-                        }}
-                    />
-                    <div
-                        className="h-[75px] w-[75px] rounded-full border"
-                        style={{ background: selectedBG }}
-                    >
+            <div className="flex h-full w-[85%] flex-wrap bg-[#2F3336]">
+                <div
+                    className="flex w-full gap-4 "
+                    style={{
+                        height: `${extraController.innerH}%`,
+                    }}
+                >
+                    <div className="flex w-[10%] flex-col items-center justify-around">
                         <div
-                            className="h-full w-full rounded-full "
-                            style={{ background: `${color}${toHex(opacity)}` }}
-                        ></div>
+                            className="h-8 w-8 rounded-full bg-black hover:cursor-pointer"
+                            onClick={() => {
+                                setSelectedBG('black');
+                            }}
+                        />
+                        <div
+                            className="h-[75px] w-[75px] rounded-full border"
+                            style={{ background: selectedBG }}
+                        >
+                            <div
+                                className="h-full w-full rounded-full "
+                                style={{
+                                    background: `${color}${toHex(opacity)}`,
+                                }}
+                            ></div>
+                        </div>
+                        <div
+                            className="h-8 w-8 rounded-full bg-white hover:cursor-pointer"
+                            onClick={() => {
+                                setSelectedBG('white');
+                            }}
+                        />
                     </div>
-                    <div
-                        className="h-8 w-8 rounded-full bg-white hover:cursor-pointer"
-                        onClick={() => {
-                            setSelectedBG('white');
+                    <div className="flex w-full flex-col items-center justify-center">
+                        <ColorSlider {...{ setColor }} />
+                    </div>
+                    <div className="flex w-[25%] flex-col items-center justify-center ">
+                        <OpacitySlider {...{ opacity, setOpacity, color }} />
+                    </div>
+                </div>
+                <div
+                    className="w-full gap-4 bg-red-800"
+                    style={{
+                        height: `${extraController.innerH}%`,
+                        display: extraController.displayBottom,
+                    }}
+                >
+                    {/* <input type='range' min={} max={} value={boxSize} onChange={()=>{setBoxSize}} /> */}
+                    <input
+                        type="range"
+                        min={0}
+                        max={250}
+                        value={radius}
+                        onChange={(e) => {
+                            setRadius(parseInt(e.target.value));
                         }}
                     />
-                </div>
-                <div className="flex w-full flex-col items-center justify-center">
-                    <ColorSlider {...{ setColor }} />
-                </div>
-                <div className="flex w-[25%] flex-col items-center justify-center ">
-                    <OpacitySlider {...{ opacity, setOpacity, color }} />
+                    <input
+                        type="range"
+                        min={-100}
+                        max={100}
+                        value={centerRadius}
+                        onChange={(e) => {
+                            setCenterRadius(parseInt(e.target.value));
+                        }}
+                    />
                 </div>
             </div>
         </div>
